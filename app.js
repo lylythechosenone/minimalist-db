@@ -77,7 +77,7 @@ app.post('/login', (req, res) => {
     if (req.body === data["password"]) {
         let token = Math.round(Math.random() * 899999999999999999 + 100000000000000000).toString()
         while (tokens.includes(token)) {
-            token = (Math.random() * 899999999 + 100000000).toString()
+            token = (Math.random() * 899999999999999999 + 100000000000000000).toString()
         }
         tokens[tokens.length] = token
         res.send(`{"token": "${token}"`)
