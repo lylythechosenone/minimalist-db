@@ -6,6 +6,7 @@ app.use(bodyParser.json())
 app.use(bodyParser.text())
 
 const fs = require('fs')
+const crypto = require('crypto')
 
 let data
 loadData()
@@ -71,16 +72,20 @@ function logRequest(req, res) {
     if (req.method !== "GET") {
         console.log(`Body: ${JSON.stringify(req.body)}`)
     }
+    if (res.statusCode === 401) {
+        console.log(req.headers["authorization"])
+        console.log(tokens)
+    }
 }
 
 app.post('/login', (req, res) => {
-    if (req.body === data["password"]) {
-        let token = Math.round(Math.random() * 899999999999999999 + 100000000000000000).toString()
+    if (req.body["password"] === data["password"]) {
+        let token = crypto.randomUUID()
         while (tokens.includes(token)) {
-            token = (Math.random() * 899999999999999999 + 100000000000000000).toString()
+            token = crypto.randomUUID()
         }
         tokens[tokens.length] = token
-        res.send(`{"token": "${token}"`)
+        res.send(`{"token": "${token}"}`)
     } else {
         res.status(401)
         res.send(`{"error": "Incorrect password"}`)
